@@ -1,6 +1,6 @@
 - 👋 Hi, I’m richa chachan
 - 👀 I’m interested in frontend web development
-- 🌱 I’m currently learning to sharp my skills for being a better frontend web developer
+- Web application developer with 1.5 year of experience in JAVASCRIPT,HTML,CSS,BOOTSTRAP,REACT.JS,ANGULAR.
 - 📫 How to reach me - you can reach me with help of my linkedin profile "https://www.linkedin.com/in/richa-chachan"
 
 <!---
