@@ -1,12 +1,17 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { useState } from "react";
 import { checkValidData } from "../../utils/checkValidData";
 import { addUser } from "../../utils/store/userSlice";
 import { auth } from "../../utils/firebase";
 import { useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 const Login = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -21,7 +26,13 @@ const Login = () => {
   // Toggle between sign-in and sign-up form
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
-    setFormData({ firstName: "", lastName: "", email: "", password: "", gender: "" });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      gender: "",
+    });
     setErrorMessage(null);
   };
 
@@ -38,13 +49,17 @@ const Login = () => {
   const handleButton = () => {
     let message = null;
     if (!isSignInForm) {
-      message = checkValidData(formData.email, formData.password, formData.firstName);
+      message = checkValidData(
+        formData.email,
+        formData.password,
+        formData.firstName
+      );
     } else {
       message = checkValidData(formData.email, formData.password, null);
     }
     setErrorMessage(message);
     if (message) return;
-    
+
     if (isSignInForm) {
       signInWithEmailAndPassword(auth, formData.email, formData.password)
         .then((userCredential) => {
@@ -55,40 +70,40 @@ const Login = () => {
           setErrorMessage(error.code + " - " + error.message);
         });
     } else {
-        createUserWithEmailAndPassword(
-            auth,
-            email.current.value,
-            password.current.value
-          )
-            .then((userCredential) => {
-              // Signed up
-    
-              const user = userCredential.user;
-              // update profile logic
-    
-              updateProfile(user, {
-                displayName: name.current.value,
-                photoURL: headerUserLogo,
-              })
-                .then(() => {
-                  // Profile updated!
-                  const { uid, email, displayName, photoURL } = auth.currentUser;
-                  dispatch(
-                    addUser({
-                      uid: uid,
-                      email: email,
-                      displayName: displayName,
-                      photoURL: photoURL,
-                    })
-                  );
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+
+          const user = userCredential.user;
+          // update profile logic
+
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: headerUserLogo,
+          })
+            .then(() => {
+              // Profile updated!
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
                 })
-                .catch((error) => {
-                  setErrorMessage(error.message);
-                });
+              );
             })
             .catch((error) => {
-              setErrorMessage(error.code + "-" + error.message);
+              setErrorMessage(error.message);
             });
+        })
+        .catch((error) => {
+          setErrorMessage(error.code + "-" + error.message);
+        });
     }
   };
 
@@ -100,7 +115,11 @@ const Login = () => {
             <h1 className="text-2xl font-semibold text-center">
               {isSignInForm ? "Log in to Facebook" : "Create a new account"}
             </h1>
-            {!isSignInForm && <p className="text-center text-sm text-gray-500">It's quick and easy.</p>}
+            {!isSignInForm && (
+              <p className="text-center text-sm text-gray-500">
+                It's quick and easy.
+              </p>
+            )}
           </div>
 
           {/* Display error message if any */}
@@ -223,6 +242,16 @@ const Login = () => {
                 : "Already Registered? Sign In Now"}
             </label>
           </div>
+          {isSignInForm && <div className="mt-4 text-center">
+            <p className="text-sm sm:text-base">
+              <NavLink
+                to="/"
+                className="text-blue-600 hover:text-blue-700 underline underline-offset-2 transition duration-300"
+              >
+                ← Other Login options
+              </NavLink>
+            </p>
+          </div>}
         </form>
       </div>
     </div>
